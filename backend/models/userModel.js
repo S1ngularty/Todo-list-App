@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     validate: (v) => validator.isEmail(v),
   },
+  password:{
+    type:String,
+    required:true,
+    select:false,
+  },
   avatar: {
     publicId: String,
     url: {
