@@ -15,4 +15,20 @@ const getUser = async (request) => {
   return user;
 };
 
-module.exports = { create };
+const update = async (request) => {
+  const { userId } = request.params;
+  if (!mongoose.Schema.Types.ObjectId.isValid(userId))
+    throw new Error("invalid userId");
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: request.body,
+    },
+    { new: true, runValidators: true }
+  );
+
+  if (!user) throw new Error("failed to update the user");
+  return user;
+};
+
+module.exports = { create, getUser, update };
