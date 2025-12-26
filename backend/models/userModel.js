@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const passwordValidator = require("../utils/passwordUtil")
 
 const userSchema = new mongoose.Schema({
   firebaseId: {
@@ -19,6 +20,7 @@ const userSchema = new mongoose.Schema({
     type:String,
     required:true,
     select:false,
+    validate:(v)=> passwordValidator.validate(v)
   },
   avatar: {
     publicId: String,
