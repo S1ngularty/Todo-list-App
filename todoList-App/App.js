@@ -1,17 +1,19 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { SafeAreaProvider,SafeAreaView } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import LoginScreen from "./src/screens/loginScreen";
+
+const Stack = createNativeStackNavigator()
 
 export default function App(){
   return(
-   <SafeAreaProvider>
-    <SafeAreaView>
-      <View>
-        <Text>
-          Hello World!
-        </Text>
-      </View>
-    </SafeAreaView>
-   </SafeAreaProvider>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        {/* <Stack.Screen/> */}
+      </Stack.Navigator>
+    </NavigationContainer>
+    // <LoginScreen></LoginScreen>
   )
 }
