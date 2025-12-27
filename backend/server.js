@@ -1,14 +1,17 @@
-require("dotenv").config()
-const App = require("./App")
-const http = require("http")
+require("dotenv").config();
+const App = require("./App");
+const http = require("http");
+const connectToDB = require("./configs/database");
 
-const server = http.createServer(App)
-const port = process.env.PORT || 3000
+connectToDB();
 
-server.listen(port,()=>{
-    console.log(`server is running on port ${port}`)
-})
+const server = http.createServer(App);
+const port = process.env.PORT || 3000;
 
-server.on("error",(error)=>{
-    console.log(`Server error: ${error}`)
-})
+server.listen(port, () => {
+  console.log(`server is running on port ${port}`);
+});
+
+server.on("error", (error) => {
+  console.log(`Server error: ${error}`);
+});
