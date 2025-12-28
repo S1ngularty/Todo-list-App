@@ -31,4 +31,15 @@ const update = async (request) => {
   return user;
 };
 
+const login = async(request) =>{
+  const {username,password } = request.body
+  const user = await User.findOne({username}).select("+password")
+
+  if(!user) throw new Error("user is not found!")
+  let match = user.password === password || false
+
+  return
+
+}
+
 module.exports = { create, getUser, update };
