@@ -39,7 +39,15 @@ const login = async(request) =>{
   let match = user.password === password || false
 
   return
+}
 
+const deactivate = async(request)=>{
+  const {userId,status} = request.user
+  const user = await User.findById(userId).select("+status")
+  if(!user) throw new Error("user not found")
+  // user.status = "inactive"
+  // await user.save()
+  return "success"
 }
 
 module.exports = { create, getUser, update };
