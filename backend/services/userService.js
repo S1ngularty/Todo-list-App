@@ -31,4 +31,23 @@ const update = async (request) => {
   return user;
 };
 
+const login = async(request) =>{
+  const {username,password } = request.body
+  const user = await User.findOne({username}).select("+password")
+
+  if(!user) throw new Error("user is not found!")
+  let match = user.password === password || false
+
+  return
+}
+
+const deactivate = async(request)=>{
+  const {userId,status} = request.user
+  const user = await User.findById(userId).select("+status")
+  if(!user) throw new Error("user not found")
+  // user.status = "inactive"
+  // await user.save()
+  return "success"
+}
+
 module.exports = { create, getUser, update };
