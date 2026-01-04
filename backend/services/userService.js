@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const mongoose = require("mongoose");
+
 const create = async (request) => {
   const newUser = await User.create(request.body);
   if (!newUser) throw new Error("failed to create the user");
@@ -31,23 +32,31 @@ const update = async (request) => {
   return user;
 };
 
-const login = async(request) =>{
-  const {username,password } = request.body
-  const user = await User.findOne({username}).select("+password")
+const login = async (request, response) => {
+  const { email, password } = request.body;
+  const user = await User.findOne({ email }).select("+password");
 
-  if(!user) throw new Error("user is not found!")
-  let match = user.password === password || false
+  if (!user) throw new Error("user is not found!");
+  let match = user.password === password || false;
 
-  return
-}
+  const httpCookieConfigs = {
+    httpOnly: true,
+    secure: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  };
 
-const deactivate = async(request)=>{
-  const {userId,status} = request.user
-  const user = await User.findById(userId).select("+status")
-  if(!user) throw new Error("user not found")
+  response.cookie("email", email, httpCookieConfigs);
+  response.cookie("password", password, httpCookieConfigs);
+  return;
+};
+
+const deactivate = async (request) => {
+  const { userId, status } = request.user;
+  const user = await User.findById(userId).select("+status");
+  if (!user) throw new Error("user not found");
   // user.status = "inactive"
   // await user.save()
-  return "success"
-}
+  return "success";
+};
 
-module.exports = { create, getUser, update };
+module.exports = { create, getUser, update, login };

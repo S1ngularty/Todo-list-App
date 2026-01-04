@@ -1,8 +1,11 @@
 function controllerWrapper(fn) {
   return async function (req, res) {
     try {
-      const result = await fn(req);
-      return result;
+      const result = await fn(req,res);
+      return res.json({
+        success:true,
+        result
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({

@@ -3,10 +3,10 @@ const validator = require("validator");
 const passwordValidator = require("../utils/passwordUtil")
 
 const userSchema = new mongoose.Schema({
-  firebaseId: {
-    type: String,
-    required: true,
-  },
+  // firebaseId: {
+  //   type: String,
+  //   required: true,
+  // },
   username: {
     type: String,
     required: true,
@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: (v) => validator.isEmail(v),
+    unique:true
   },
   password:{
     type:String,
