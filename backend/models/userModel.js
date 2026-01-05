@@ -34,17 +34,16 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.pre("save", async function (next) {
-  if (this.isModified("password") || !this.password) return next();
+userSchema.pre("save", async function () {
+  if (this.isModified("password") || !this.password) return;
   this.password = await bcrypt.hash(this.password, 10);
-  next();
+  return
 });
 
 userSchema.methods.getToken = async function () {
   return jwt.sign(
     {
       userId: this._id,
-      role: this.role,
       name: this.username,
       email: this.email,
     },

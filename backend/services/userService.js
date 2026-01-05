@@ -2,7 +2,7 @@ const User = require("../models/userModel");
 const mongoose = require("mongoose");
 
 const create = async (request) => {
-  const newUser = await User.create(request.body);
+  const newUser = (await User.create(request.body)).save();
   if (!newUser) throw new Error("failed to create the user");
   return newUser;
 };
@@ -34,19 +34,19 @@ const update = async (request) => {
 
 const login = async (request, response) => {
   const { email, password } = request.body;
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email }).select("+password email username");
 
   if (!user) throw new Error("user is not found!");
-  let match = user.password === password || false;
+  if (user.password === password) throw new Error("password does not match");
+
+  const token = await user.getToken();
 
   const httpCookieConfigs = {
     httpOnly: true,
     secure: true,
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
-
-  response.cookie("email", email, httpCookieConfigs);
-  response.cookie("password", password, httpCookieConfigs);
+  response.cookie("token", token, httpCookieConfigs);
   return;
 };
 
