@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const passwordValidator = require("../utils/passwordUtil")
+const passwordValidator = require("../utils/passwordUtil");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
   // firebaseId: {
@@ -15,13 +16,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     validate: (v) => validator.isEmail(v),
-    unique:true
+    unique: true,
   },
-  password:{
-    type:String,
-    required:true,
-    select:false,
-    validate:(v)=> passwordValidator.validate(v)
+  password: {
+    type: String,
+    required: true,
+    select: false,
+    validate: (v) => passwordValidator.validate(v),
   },
   avatar: {
     publicId: String,
@@ -30,6 +31,17 @@ const userSchema = new mongoose.Schema({
       validate: (v) => validator.isURL(v),
     },
   },
-});true
+});
+
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password") || !this.password) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+});
+
+userSchema.methods.comparePassword= async function(enteredPassword){
+  if(String(enteredPassword).trim()=== this.password) return true
+  return false
+}
 
 module.exports = mongoose.model("User", userSchema);
