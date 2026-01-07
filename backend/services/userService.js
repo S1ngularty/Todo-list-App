@@ -34,6 +34,7 @@ const update = async (request) => {
 
 const login = async (request, response) => {
   const { email, password } = request.body;
+  console.log(email)
   const user = await User.findOne({ email }).select("+password email username");
 
   if (!user) throw new Error("user is not found!");

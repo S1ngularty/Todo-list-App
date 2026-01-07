@@ -9,24 +9,49 @@ import {
   TextInput,
 } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import axios from "axios";
 
 export default function LoginScreen() {
   const [credentials, setCredentials] = React.useState({
-    username: "",
+    email: "",
     password: "",
   });
+
+  async function submitCredentials() {
+  try {
+    // Validate input
+    Object.values(credentials).forEach((val) => {
+      if (!val) throw new Error("Please fill in all fields");
+    });
+    console.log(credentials)
+    const response = await axios.post(
+      'http://192.168.1.11:8000/api/v1/login',
+      credentials,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    ).then(response => {
+      
+      console.log("Successfully logged in!", response.data);
+    });
+  } catch (error) {
+    console.error(error);
+    Alert.alert("Login Error", error.message);
+  }
+}
+
 
   return (
     <SafeAreaView style={style.main}>
       <View style={style.container}>
         <View style={style.inputView}>
-          <Text style={style.inputLabel}>Username:</Text>
+          <Text style={style.inputLabel}>Email:</Text>
           <TextInput
             style={style.inputBox}
             onChangeText={(text) =>
-              setCredentials((prev) => ({ ...prev, username: text }))
+              setCredentials((prev) => ({ ...prev, email: text }))
             }
-            value={credentials.username}></TextInput>
+            value={credentials.email}></TextInput>
         </View>
         <View style={style.inputView}>
           <Text style={style.inputLabel}>Password:</Text>
@@ -38,7 +63,7 @@ export default function LoginScreen() {
             value={credentials.password}></TextInput>
         </View>
         <View style={style.buttonView}>
-          <Pressable style={style.button}>
+          <Pressable style={style.button} onPress={ submitCredentials}>
             <Text style={style.buttonText}>Login</Text>
           </Pressable>
         </View>
@@ -95,7 +120,7 @@ const style = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button: {
-    height:50,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#007AFF",
