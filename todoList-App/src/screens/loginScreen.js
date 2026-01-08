@@ -12,12 +12,14 @@ import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { rememberCredentials } from "../features/authSlice";
+import { useNavigation } from "@react-navigation/native";
 
 export default function LoginScreen() {
   const [credentials, setCredentials] = React.useState({
     email: "",
     password: "",
   });
+  const navigation = useNavigation()
 
 
   async function submitCredentials() {
@@ -35,6 +37,7 @@ export default function LoginScreen() {
       );
 
       console.log("Successfully logged in!", response.data);
+      navigation.navigate('Home',{message:"message from homeScreen"})
     } catch (error) {
       console.error(error);
       Alert.alert("Login Error", error.message);
