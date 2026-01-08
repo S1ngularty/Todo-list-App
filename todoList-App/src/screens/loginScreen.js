@@ -19,6 +19,7 @@ export default function LoginScreen() {
     email: "",
     password: "",
   });
+  const dispatch = useDispatch()
   const navigation = useNavigation()
 
 
@@ -37,6 +38,7 @@ export default function LoginScreen() {
       );
 
       console.log("Successfully logged in!", response.data);
+      dispatch(rememberCredentials(credentials))
       navigation.navigate('Home',{message:"message from homeScreen"})
     } catch (error) {
       console.error(error);
