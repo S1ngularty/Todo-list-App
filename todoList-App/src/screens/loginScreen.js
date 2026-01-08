@@ -9,7 +9,9 @@ import {
   TextInput,
 } from "react-native";
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import { rememberCredentials } from "../features/authSlice";
 
 export default function LoginScreen() {
   const [credentials, setCredentials] = React.useState({
@@ -17,29 +19,27 @@ export default function LoginScreen() {
     password: "",
   });
 
-  async function submitCredentials() {
-  try {
-    // Validate input
-    Object.values(credentials).forEach((val) => {
-      if (!val) throw new Error("Please fill in all fields");
-    });
-    console.log(credentials)
-    const response = await axios.post(
-      'http://192.168.1.11:8000/api/v1/login',
-      credentials,
-      {
-        headers: { "Content-Type": "application/json" },
-      }
-    ).then(response => {
-      
-      console.log("Successfully logged in!", response.data);
-    });
-  } catch (error) {
-    console.error(error);
-    Alert.alert("Login Error", error.message);
-  }
-}
 
+  async function submitCredentials() {
+    try {
+      // Validate input
+      Object.values(credentials).forEach((val) => {
+        if (!val) throw new Error("Please fill in all fields");
+      });
+      const response = await axios.post(
+        "http://192.168.1.11:8000/api/v1/login",
+        credentials,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      console.log("Successfully logged in!", response.data);
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Login Error", error.message);
+    }
+  }
 
   return (
     <SafeAreaView style={style.main}>
@@ -60,10 +60,12 @@ export default function LoginScreen() {
             onChangeText={(text) =>
               setCredentials((prev) => ({ ...prev, password: text }))
             }
-            value={credentials.password}></TextInput>
+            value={
+              credentials.password
+            }></TextInput>
         </View>
         <View style={style.buttonView}>
-          <Pressable style={style.button} onPress={ submitCredentials}>
+          <Pressable style={style.button} onPress={submitCredentials}>
             <Text style={style.buttonText}>Login</Text>
           </Pressable>
         </View>
